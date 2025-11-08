@@ -144,4 +144,4 @@ cd idea-maker-qa-project
 mvn clean test
 
 ---
-**Projeto desenvolvido para avaliação técnica — IDEA****
+**Projeto desenvolvido para avaliação técnica — IDEA**
