@@ -1,0 +1,66 @@
+name:  CI/CD - QA Automation IDEA MAKER
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test-automation:
+    name: Run Automated Tests (Web + API)
+    runs-on: windows-latest
+
+    steps:
+      - name:  Checkout do repositório
+        uses: actions/checkout@v3
+
+      - name:  Configurar Java 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name:  Instalar dependências do Maven
+        run: mvn -q clean install
+
+      - name:  Executar testes automatizados (TestNG)
+        run: mvn clean test
+
+      - name:  Upload resultados do Allure
+        uses: actions/upload-artifact@v3
+        with:
+          name: allure-results
+          path: allure-results
+
+  deploy-allure-report:
+    name:  Publicar Allure Report no GitHub Pages
+    needs: test-automation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name:  Checkout repo
+        uses: actions/checkout@v3
+
+      - name:  Download allure-results do job anterior
+        uses: actions/download-artifact@v3
+        with:
+          name: allure-results
+          path: allure-results
+
+      - name:  Instalar Allure CLI
+        run: |
+          sudo apt-add-repository ppa:qameta/allure -y
+          sudo apt-get update
+          sudo apt-get install allure -y
+
+      - name:  Gerar relatório Allure
+        run: |
+          allure generate allure-results --clean
+          ls -la
+
+      - name:  Deploy Allure no GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: allure-report
