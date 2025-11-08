@@ -37,46 +37,49 @@ pdf
 pom.xml
 README.md
 
-yaml
-Copiar código
+O teste manual foi executado com foco na jornada completa do usuário, cobrindo:
 
+Login (Sign In / Skip Sign In)
+Register (Cadastro de usuário)
+Upload e Download de arquivos
+**Documento completo com prints, evidências e descrição dos bugs encontrados:*
 
-## Testes Web (Selenium)
+**[Abrir Teste Manual (PDF)](./docs/manual-tests/TestPlan_IDEA_Renan_Ribeiro.pdf)**
 
-### Cenários Explorados e Resultados
+## Bugs Encontrados (Evidenciados por prints)
 
-ID Cenário Web | Resultado
-| TC001 | Acesso "Skip Sign In" Passou
-| TC002 | Login com e-mail inválido  **BUG – alerta incorreto**
-| TC003 | Login sem preencher e-mail  **BUG – não valida obrigatório** 
-| TC004 | Register – Validação telefone  **BUG – aceita formatos inválidos** 
-| TC005 | Register – Campo Country bloqueado por anúncio **BUG crítico – UI bloqueada** 
-| TC006 | Register – Submit bloqueado **BUG crítico – anúncio bloqueia ação** 
-| TC007 | Download TXT funciona 
-| TC008 | Download PDF baixa arquivo incorreto  BUG 
-| TC009 | Upload não funciona   BUG – botão não executa ação 
+ID do Cenário Tela Descrição do Bug Evidência
+| TC001 | Home | Botão *Skip Sign In* funciona normalmente (cenário passa) 
+| TC002 | Login | Erro no login com e-mail inválido → página exibe *alert inesperado*, fluxo quebra | TC002-Login-EmailErrado.png |
+| TC003 | Login | Login sem preenchimento do e-mail → mesmo alerta indevido | TC003-Login-SemEmail.png |
+| TC004 | Register | Campo *Phone* aceita somente 10 dígitos (fora do padrão brasileiro) | TC004-Register-PhoneBug.png |
+| TC005 | Register | Dropdown de País bloqueado por anúncio (iframe impede interação) | TC005-Register-AdBlockedCountry.png |
+| TC006 | Register | Botão *Submit* também fica bloqueado pelo anúncio → impossibilitando cadastro | TC006-Register-AdBlockedSubmit.png |
+| TC007 | Download TXT | Download de arquivo TXT funciona corretamente 
+| TC008 | Download PDF | PDF gerado vem corrompido / não abre após download | TC008-DownloadPDFBug.png |
+| TC009 | Upload | Tela aceita arquivo, porém o botão *Upload* não realiza nenhuma ação | TC009-UploadBug.png |
 
-📄 **PDF com evidências (prints + análise dos bugs):**  
-👉 [Test Manual IDEA (PDF)](evidence/pdf/Teste_Manual_IDEA_QA.pdf)
+##  Pontos de Melhoria (Sugestões para Correção)
 
-🖼 Prints armazenados em  
-➡ `evidence/screenshots/`
+Componente Problema Sugestão de Melhoria
 
----
-
+Validação do Login Mensagens genéricas e alertas do navegador=Implementar validações HTML5 e mensagens amigáveis na UI
+Campo Phone Obrigatoriedade de 10 dígitos — sem considerar diferentes formatos internacionais Ajustar RegEx ou permitir formatação dinâmica conforme país
+Anúncios sobre o formulário iframe está sobrepondo elementos essenciais (Dropdown + Submit) Ajustar o layout com **z-index**, ou carregar anúncio apenas após o cadastro
+Botão Submit Não clicável devido ao anúncio Verificar CSS `pointer-events: none` aplicado pelo ads
+Download PDF Arquivo gerado está corrompido Validar backend de geração do PDF
+Upload de arquivo Botão não dispara requisição Verificar listener JS do botão *Upload* e endpoint 
 ### ▶ Execução dos testes Web
 
 mvn -Dtest=web.NomeDoTeste test
 
 makefile
-Copiar código
 
 Exemplo:
 
 mvn -Dtest=web.J_RegisterTest test
 
 yaml
-Copiar código
 
 ---
 
@@ -93,9 +96,6 @@ Execução:
 
 mvn -Dtest=api.ProductApiTest test
 
-yaml
-Copiar código
-
 Validação por JSON Schema também aplicada 
 
 ---
@@ -105,9 +105,6 @@ Validação por JSON Schema também aplicada
 Script:
 
 k6 run performance/k6-script.js
-
-yaml
-Copiar código
 
 Resultado obtido:
 
@@ -124,9 +121,6 @@ Gerar report:
 
 mvn clean test
 allure serve allure-results
-
-yaml
-Copiar código
 
 ---
 
@@ -148,15 +142,6 @@ Pipeline executa:
 git clone https://github.com/RENAN10-AFK/idea-maker-qa-project.git
 cd idea-maker-qa-project
 mvn clean test
-
-yaml
-Copiar código
-
----
-
-##  Vídeo da execução
-
-(Adicionar depois o vídeo na pasta `/evidence/videos/` e colocar o link aqui)
 
 ---
 **Projeto desenvolvido para avaliação técnica — IDEA**

@@ -1,8 +1,0 @@
-package web;
-
-import org.testng.annotations.Test;
-
-@Test
-public class WebSuiteTest {
-    // Esta classe serve apenas como "container / suite"
-}
